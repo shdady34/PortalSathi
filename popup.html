@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      width: 320px; 
+      padding: 12px; 
+      background-color: #f3f4f6; 
+      margin: 0; 
+    }
+    /* Modernize the Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #dadce0; 
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #bdc1c6; 
+    }
+    h3 { 
+      margin-top: 0; 
+      color: #1a73e8; 
+      font-size: 18px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 12px; 
+    }
+    #radarBadge { 
+      font-size: 11px; 
+      padding: 4px 8px; 
+      border-radius: 12px; 
+      color: white; 
+      background: #888; 
+      font-weight: normal; 
+    }
+    
+    /* New Card Layout for each section */
+    .card { 
+      background: white; 
+      padding: 12px; 
+      border-radius: 8px; 
+      margin-bottom: 12px; 
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+    }
+    p.title { 
+      color: #202124; 
+      font-size: 13px; 
+      font-weight: 600; 
+      margin: 0 0 10px 0; 
+    }
+    
+    /* Standardized modern inputs */
+    input[type="file"], select, input[type="text"] { 
+      margin-bottom: 8px; 
+      font-size: 12px; 
+      width: 100%; 
+      box-sizing: border-box; 
+      padding: 8px; 
+      border: 1px solid #dadce0; 
+      border-radius: 4px; 
+      outline: none;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: #1a73e8;
+    }
+
+    /* Standard Button Styling */
+    button { 
+      background: #1a73e8; 
+      color: white; 
+      border: none; 
+      padding: 8px; 
+      width: 100%; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: bold; 
+      font-size: 12px; 
+      transition: background 0.2s; 
+    }
+    button:hover { background: #1557b0; }
+    
+    /* Specific Button Colors */
+    #reportBtn { background: #d93025; margin-bottom: 0;}
+    #reportBtn:hover { background: #b3261e; }
+    
+    #fillVaultBtn { background: #0f9d58; }
+    #fillVaultBtn:hover { background: #0b8043; }
+    
+    #saveVaultBtn { 
+      background: #f1f3f4; 
+      color: #3c4043; 
+      border: 1px solid #dadce0; 
+    }
+    #saveVaultBtn:hover { background: #e8eaed; }
+
+    .row { display: flex; gap: 8px; margin-top: 4px;}
+    #status { font-size: 12px; color: #0f9d58; font-weight: bold; margin-top: 5px; text-align: center;}
+  </style>
+</head>
+<body>
+  
+  <h3>PortalSathi <span id="radarBadge">Checking...</span></h3>
+  
+  <!-- Card 1: Ghost Save -->
+  <div class="card">
+    <p class="title">Form Timeout Recovery</p>
+    <button id="restoreBtn">Restore Form Data</button>
+  </div>
+
+  <!-- Card 2: Image Formatter -->
+  <div class="card">
+    <p class="title">Smart Image Formatter</p>
+    <select id="imagePreset">
+      <option value="compress">Standard Compress (< 50KB)</option>
+      <option value="passport">Passport Photo (200x230 px)</option>
+      <option value="signature">Signature Crop (140x60 px)</option>
+    </select>
+    <input type="file" id="imageInput" accept="image/*">
+    <button id="compressBtn">Format & Download</button>
+    <div id="status"></div>
+  </div>
+
+  <!-- Card 3: Profile Vault -->
+  <div class="card">
+    <p class="title">Local Profile Vault</p>
+    <input type="text" id="vaultName" placeholder="Full Name">
+    <input type="text" id="vaultFather" placeholder="Father's Name">
+    <input type="text" id="vaultAadhaar" placeholder="Aadhaar Number">
+    <input type="text" id="vaultAddress" placeholder="Permanent Address">
+    <div class="row">
+      <button id="saveVaultBtn">Save Data</button>
+      <button id="fillVaultBtn">Auto-Fill Page</button>
+    </div>
+  </div>
+
+  <!-- Card 4: Scam Reporter -->
+  <div class="card">
+    <p class="title">Community Safety</p>
+    <button id="reportBtn">🚨 Report Fake/Scam Site</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
