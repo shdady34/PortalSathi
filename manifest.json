@@ -5,7 +5,12 @@
   "description": "Fixes session timeouts, compresses images, and decodes jargon on Indian government portals.",
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Open PortalSathi"
+    "default_title": "Open PortalSathi",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   },
   "permissions": [
     "storage",
@@ -17,5 +22,10 @@
       "matches": ["<all_urls>"],
       "js": ["content.js"]
     }
-  ]
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
 }

@@ -9,7 +9,7 @@ document.addEventListener('input', (event) => {
 });
 
 // 2. Listen for messages from the popup menu
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   
   // Action: Ghost Save Restore
   if (request.action === 'restore_data') {
@@ -76,3 +76,61 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 });
+
+// --- HEURISTIC DOM SCANNER (AUTO-FILL LOGIC) ---
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "autofill") {
+        console.log("PortalSathi: Scanning DOM for matching fields...");
+        smartFillForm(request.data);
+        sendResponse({status: "Filled successfully"});
+    }
+});
+
+function smartFillForm(data) {
+    // 1. Define our "Heuristic Dictionary" (Keywords to look for)
+    const fieldPatterns = {
+        name: ['name', 'fullname', 'applicant', 'fname'],
+        father: ['father', 'guardian', 'careof', 'c/o'],
+        phone: ['phone', 'mobile', 'contact', 'tel'],
+        dob: ['dob', 'birth', 'dateofbirth'],
+        address: ['address', 'permanent', 'residential']
+    };
+
+    // 2. Grab all inputs on the current web page
+    const allInputs = document.querySelectorAll('input:not([type="hidden"]), textarea');
+
+    // 3. The Scanning Engine
+    allInputs.forEach(input => {
+        // Read the HTML attributes of the box
+        const id = (input.id || "").toLowerCase();
+        const nameAttr = (input.name || "").toLowerCase();
+        const placeholder = (input.placeholder || "").toLowerCase();
+        
+        // Combine them into one string for easy searching
+        const context = `${id} ${nameAttr} ${placeholder}`;
+
+        // Name
+        if (fieldPatterns.name.some(word => context.includes(word)) && !context.includes('father')) {
+            if (!input.value) input.value = data.name;
+        }
+        // Father's Name
+        else if (fieldPatterns.father.some(word => context.includes(word))) {
+            if (!input.value) input.value = data.father;
+        }
+        // Phone
+        else if (fieldPatterns.phone.some(word => context.includes(word))) {
+            if (!input.value) input.value = data.phone;
+        }
+        // Address
+        else if (fieldPatterns.address.some(word => context.includes(word))) {
+            if (!input.value) input.value = data.address;
+        }
+        // DOB (Date of Birth)
+        else if (fieldPatterns.dob.some(word => context.includes(word))) {
+            if (!input.value) input.value = data.dob;
+        }
+    });
+
+    console.log("PortalSathi: Heuristic Auto-Fill Complete.");
+};

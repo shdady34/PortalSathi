@@ -14,13 +14,24 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   const isGovDomain = url.includes('.gov.in') || url.includes('.nic.in');
   const isTrustedDomain = trustedDomains.some(domain => url.includes(domain));
 
-  if (isGovDomain || isTrustedDomain) {
-    badge.innerText = "✓ Official Site";
-    badge.style.background = "#0f9d58"; 
-  } else {
-    badge.innerText = "⚠ Unofficial Site";
-    badge.style.background = "#d93025"; 
-  }
+  const radarBadge = document.getElementById('radarBadge');
+
+    // Safety check to ensure the badge exists before modifying it
+    if (radarBadge) {
+        const isGovDomain = url.includes('.gov.in') || url.includes('.nic.in');
+        // Keep your trustedDomains check if you have that array defined above
+        const isTrustedDomain = typeof trustedDomains !== 'undefined' ? trustedDomains.some(domain => url.includes(domain)) : false;
+
+        if (isGovDomain || isTrustedDomain) {
+            radarBadge.innerText = "✅ Official Site";
+            radarBadge.className = "badge-safe"; 
+            radarBadge.removeAttribute("style"); 
+        } else {
+            radarBadge.innerText = "⚠️ Unofficial Site";
+            radarBadge.className = "badge-warning"; 
+            radarBadge.removeAttribute("style"); 
+        }
+    }
 });
 
 // --- Feature 1: Restore Form Data ---
@@ -109,53 +120,63 @@ chrome.storage.local.get(['vaultData'], (result) => {
   }
 });
 
-// Save data locally
-document.getElementById('saveVaultBtn').addEventListener('click', () => {
-  const data = {
-    name: document.getElementById('vaultName').value,
-    fatherName: document.getElementById('vaultFather').value,
-    aadhaar: document.getElementById('vaultAadhaar').value,
-    address: document.getElementById('vaultAddress').value
-  };
-  chrome.storage.local.set({ vaultData: data }, () => {
-    const btn = document.getElementById('saveVaultBtn');
-    btn.innerText = "Saved!";
-    setTimeout(() => { btn.innerText = "Save Data"; }, 2000);
-  });
-});
+// --- NEW LOCAL PROFILE VAULT LOGIC ---
+// 1. Unified Save & Autofill
+const btnSaveAutofill = document.getElementById('btnSaveAutofill');
+if (btnSaveAutofill) {
+    btnSaveAutofill.addEventListener('click', () => {
+        const profileData = {
+            name: document.getElementById('vaultName').value,
+            father: document.getElementById('vaultFather').value,
+            phone: document.getElementById('vaultPhone').value,
+            dob: document.getElementById('vaultDob').value,
+            gender: document.getElementById('vaultGender').value,
+            address: document.getElementById('vaultAddress').value
+        };
 
-// Trigger Auto-Fill on the page
-document.getElementById('fillVaultBtn').addEventListener('click', async () => {
-  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  chrome.tabs.sendMessage(tab.id, { action: 'autofill_vault' }, () => {
-    const btn = document.getElementById('fillVaultBtn');
-    btn.innerText = "Filled!";
-    setTimeout(() => { btn.innerText = "Auto-Fill Page"; }, 2000);
-  });
-});
+        // Save to Chrome Storage
+        chrome.storage.local.set({ savedProfile: profileData }, () => {
+            console.log("Profile data saved securely!");
+            
+            // Immediately trigger Autofill on the active tab
+            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                if (tabs[0]) {
+                    chrome.tabs.sendMessage(tabs[0].id, { action: "autofill", data: profileData }, (response) => {
+                        // Suppress error if content script isn't injected on the current page
+                        if (chrome.runtime.lastError) {
+                            console.log("Autofill skipped: Not a valid portal page.");
+                        }
+                    });
+                }
+            });
+        });
+    });
+}
 
-// --- Feature 5: Scam Reporter ---
-document.getElementById('reportBtn').addEventListener('click', async () => {
-  // Grab the current tab to see what website the user is on
-  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  
-  // Extract just the domain name (e.g., "fake-pan-site.com" instead of the huge full URL)
-  const url = new URL(tab.url).hostname; 
-  
-  const btn = document.getElementById('reportBtn');
-  
-  // Simulate sending to a database and give visual feedback
-  btn.innerText = `Flagged: ${url}`;
-  btn.style.background = "#555"; 
-  
-  // Change the Safety Radar badge at the top to Red instantly
-  const badge = document.getElementById('radarBadge');
-  badge.innerText = "⚠ Reported as Scam";
-  badge.style.background = "#d93025";
+// 2. Erase Data (The Privacy Feature)
+const btnEraseData = document.getElementById('btnEraseData');
+if (btnEraseData) {
+    btnEraseData.addEventListener('click', () => {
+        // Clear Chrome Storage
+        chrome.storage.local.remove(['savedProfile'], () => {
+            // Clear the input fields in the popup visually
+            document.getElementById('vaultName').value = '';
+            document.getElementById('vaultFather').value = '';
+            document.getElementById('vaultPhone').value = '';
+            document.getElementById('vaultDob').value = '';
+            document.getElementById('vaultGender').value = '';
+            document.getElementById('vaultAddress').value = '';
+            
+            alert("All saved data has been successfully erased from this device.");
+        });
+    });
+}
 
-  // Reset the button after 3 seconds so you can demo it again
-  setTimeout(() => { 
-    btn.innerText = "🚨 Report Fake/Scam Site"; 
-    btn.style.background = "#d93025";
-  }, 3000);
-});
+// 3. Feedback Button
+const btnFeedback = document.getElementById('btnFeedback');
+if (btnFeedback) {
+    btnFeedback.addEventListener('click', () => {
+        // Open the Google Form link in a new tab
+        chrome.tabs.create({ url: "https://forms.gle/656dGy2namqD4ArG6" }); 
+    });
+}

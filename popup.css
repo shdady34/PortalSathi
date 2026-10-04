@@ -1,0 +1,187 @@
+/* --- 1. RESET & BASE LAYOUT --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 380px; /* Standard extension width */
+    background-color: #f8fafc; /* Clean modern gray background */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #334155;
+    padding: 16px;
+    padding-bottom: 24px;
+}
+
+/* --- 2. THE CUSTOM SCROLLBAR --- */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f5f9; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+    background: #475569; /* Dark, highly visible thumb */
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #1e293b; 
+}
+
+/* --- 3. TOP HEADER (Navy Blue Title & Top-Right Badge) --- */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Pushes badge to the far right */
+    margin-bottom: 20px;
+}
+
+.app-header h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #000080; /* Navy Blue */
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+/* Radar Badges */
+.badge-warning {
+    background-color: #fee2e2 !important;
+    color: #dc2626 !important;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #fecaca !important;
+}
+
+.badge-safe {
+    background-color: #dcfce7 !important;
+    color: #166534 !important;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid #bbf7d0 !important;
+}
+
+/* --- 4. PREMIUM CARD DESIGN --- */
+.card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px; /* Smooth rounded corners */
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02); /* Barely-there shadow */
+}
+
+/* Section Headings (Bold & Pure Black) */
+h3 {
+    font-size: 13px;
+    font-weight: 900; /* Maximum bold */
+    color: #000000; /* Pure black */
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- 5. INPUT FIELDS (Clean & Spacious) --- */
+.vault-sub-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: -6px; /* Tucks the label tightly above the input */
+}
+
+input[type="text"], 
+input[type="tel"], 
+input[type="date"], 
+select, 
+textarea,
+input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #0f172a;
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+/* Modern focus glow effect when clicking an input */
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); 
+}
+
+/* --- 6. BUTTONS (Smooth & Clickable) --- */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:active {
+    transform: scale(0.98); /* Satisfying click animation */
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+}
+.btn-outline:hover {
+    background-color: #f1f5f9;
+    color: #334155;
+}
+
+/* --- 7. FEEDBACK SECTION --- */
+.feedback-card {
+    text-align: center;
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+}
+.feedback-card p {
+    font-size: 13px;
+    margin-bottom: 12px;
+    color: #64748b;
+}
